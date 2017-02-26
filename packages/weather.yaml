@@ -1,0 +1,56 @@
+homeassistant:
+  customize:
+    group.weather:
+      friendly_name: Wetter
+    sensor.yweather_current:
+      friendly_name: Wetter
+    sensor.yweather_temperature:
+      friendly_name: Temperatur
+      icon: mdi:thermometer
+    sensor.yweather_humidity:
+      friendly_name: Luftfeuchte
+      icon: mdi:water-percent
+    sensor.yweather_wind_speed:
+      friendly_name: Windgeschwindigkeit
+      icon: mdi:weather-windy
+    sensor.yweather_visibility:
+      friendly_name: Sicht
+      icon: mdi:eye-outline
+    sensor.yweather_condition:
+      friendly_name: Wetter heute
+    sensor.yweather_temperature_min:
+      friendly_name: Temperatur heute (min)
+      icon: mdi:thermometer
+    sensor.yweather_temperature_max:
+      friendly_name: Temperatur heute (max)
+      icon: mdi:thermometer
+    sun.sun:
+      hidden: True
+
+group:
+  weather:
+    - sensor.yweather_current
+    - sensor.yweather_temperature
+    - sensor.yweather_humidity
+    - sensor.livingroom_press
+    - sensor.yweather_wind_speed
+    - sensor.yweather_visibility
+    - sensor.yweather_condition
+    - sensor.yweather_temperature_min
+    - sensor.yweather_temperature_max
+
+sensor:
+  - platform: yweather
+    monitored_conditions:
+      - weather_current
+      - temperature
+      - humidity
+      - wind_speed
+      - visibility
+      - weather
+      - temp_min
+      - temp_max
+
+# Track the sun
+#sun:
+

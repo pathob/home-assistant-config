@@ -1,0 +1,8 @@
+homeassistant:
+  customize:
+    group.rooms:
+      friendly_name: Zimmer
+
+group:
+  rooms:
+    - group.livingroom

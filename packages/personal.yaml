@@ -1,0 +1,85 @@
+homeassistant:
+  customize:
+    device_tracker.patrickh6x:
+      friendly_name: Patrick
+    device_tracker.marysgs3:
+      friendly_name: Mary
+    sensor.time_home_to_work_patrick:
+      friendly_name: Fahrzeit zur Arbeit
+      icon: mdi:motorbike
+    sensor.time_home_to_uni_mary:
+      friendly_name: Fahrzeit zur Uni
+      icon: mdi:subway-variant
+    switch.patrick_pc_switch:
+      friendly_name: Computer
+      emulated_hue: true
+      emulated_hue_name: Patricks PC
+      icon: mdi:laptop-windows
+    switch.mary_pc_switch:
+      friendly_name: Computer
+      emulated_hue: true
+      emulated_hue_name: Marys PC
+      icon: mdi:laptop-windows
+
+group:
+  patrick:
+    name: Patrick
+    view: no
+    entities:
+      - device_tracker.patrickh6x
+      - sensor.time_home_to_work_patrick
+      - switch.patrick_pc_switch
+  mary:
+    name: Mary
+    view: no
+    entities:
+      - device_tracker.marysgs3
+      - sensor.time_home_to_uni_mary
+      - switch.mary_pc_switch
+
+zone:
+  - name: Arbeit Patrick
+    latitude:  !secret zone_work_patrick_lat
+    longitude: !secret zone_work_patrick_long
+    radius: 200
+    icon: mdi:laptop-windows
+  - name: Uni Mary
+    latitude:  !secret zone_work_mary_lat
+    longitude: !secret zone_work_mary_long
+    radius: 250
+    icon: mdi:school
+
+device_tracker:
+  - platform: fritz
+    host: router.local.net
+    user: !secret router_user
+    password: !secret router_pass
+    interval_seconds: 60
+    track_new_devices: no
+
+sensor:
+  - platform: google_travel_time
+    name: time_home_to_work_patrick
+    api_key: !secret google_travel_time_api_key
+    origin: zone.home
+    destination: zone.arbeit_patrick
+    options:
+      mode: driving
+  - platform: google_travel_time
+    name: time_home_to_uni_mary
+    api_key: !secret google_travel_time_api_key
+    origin: zone.home
+    destination: zone.uni_mary
+    options:
+      mode: transit
+
+switch:
+  - platform: wake_on_lan
+    name: Patrick PC Switch
+    mac_address: !secret pc_patrick_mac
+    host: patrick.local.net
+  - platform: wake_on_lan
+    name: Mary PC Switch
+    mac_address: !secret pc_mary_mac
+    host: mary.local.net
+

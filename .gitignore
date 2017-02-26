@@ -1,0 +1,7 @@
+# ignore sensitive information
+secrets.yaml
+known_devices.yaml
+
+# ignore application data
+*.db
+*.log

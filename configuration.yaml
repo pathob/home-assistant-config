@@ -1,0 +1,50 @@
+homeassistant:
+  name: Zuhause
+  latitude:  !secret zone_home_lat
+  longitude: !secret zone_home_long
+  elevation: 49
+  unit_system: metric
+  time_zone: Europe/Berlin
+  packages: !include_dir_named packages
+
+# Enables the frontend
+frontend:
+
+http:
+  server_port:  !secret http_port
+  api_password: !secret http_pass
+
+# Checks for available updates
+updater:
+
+# Enable new config widget
+config:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time.
+recorder:
+  purge_days: 3
+
+history:
+
+# View all events in a logbook
+logbook:
+
+browser:
+
+emulated_hue:
+  host_ip: server.local.net
+  listen_port: !secret ehue_port
+  expose_by_default: false
+
+mqtt:
+  broker: server.local.net
+  port: !secret mqtt_port
+  username: !secret mqtt_user
+  password: !secret mqtt_pass
+  client_id: homeassistant
+  keepalive: 60
+  protocol: 3.1
+

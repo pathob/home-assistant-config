@@ -1,0 +1,129 @@
+homeassistant:
+  customize:
+    group.livingroom_devices:
+      emulated_hue: true
+      emulated_hue_name: Wohnzimmer
+      icon: mdi:cellphone-link
+    group.livingroom_sensors_env:
+      icon: mdi:thermometer
+    light.livingroom_tv:
+      friendly_name: Fernsehlicht
+      emulated_hue: true
+    sensor.livingroom_temp:
+      friendly_name: Temperatur
+      icon: mdi:thermometer
+    sensor.livingroom_hum:
+      friendly_name: Luftfeuchte
+      icon: mdi:water-percent
+    sensor.livingroom_press:
+      friendly_name: Luftdruck
+      icon: mdi:gauge
+    media_player.samsung_tv_remote:
+      friendly_name: Fernseher
+      emulated_hue: true
+
+group:
+  livingroom_view:
+    view: yes
+    name: Wohnzimmer
+    entities:
+      - group.livingroom_sensors_env
+      - group.livingroom_devices
+  livingroom:
+    view: no
+    name: Wohnzimmer
+    entities:
+      - group.livingroom_devices
+      - group.livingroom_sensors_env
+  livingroom_devices:
+    view: no
+    name: Geräte
+    entities:
+      - light.livingroom_tv
+      - media_player.samsung_tv_remote
+  livingroom_sensors_env:
+    view: no
+    name: Raumdaten
+    entities:
+      - sensor.livingroom_temp
+      - sensor.livingroom_hum
+      - sensor.livingroom_press
+
+light:
+  - platform: mqtt
+    name: livingroom_tv
+    command_topic: "ESP_0B99BA/1/switch"
+    optimistic: false
+
+#   - platform: mqtt
+#     name: "Vitrine Light RGB"
+#     state_topic:              "home/livingroom/vitrine/light/status"
+#     command_topic:            "home/livingroom/vitrine/light/switch"
+#     brightness_state_topic:   "home/livingroom/vitrine/brightness/status"
+#     brightness_command_topic: "home/livingroom/vitrine/brightness/set"
+#     rgb_state_topic:          "home/livingroom/vitrine/rgb/status"
+#     rgb_command_topic:        "home/livingroom/vitrine/rgb/set"
+#     state_value_template: "{{ value_json.state }}"
+#     brightness_value_template: "{{ value_json.brightness }}"
+#     rgb_value_template: "{{ value_json.rgb | join(',') }}"
+#     qos: 0
+
+sensor:
+  - platform: mqtt
+    state_topic: 'liot_esp8266_env/+/environment'
+    name: livingroom_temp
+    unit_of_measurement: '°C'
+    value_template: '{{ value_json.temperature }}'
+  - platform: mqtt
+    state_topic: 'liot_esp8266_env/+/environment'
+    name: livingroom_hum
+    unit_of_measurement: '%'
+    value_template: '{{ value_json.humidity }}'
+  - platform: mqtt
+    state_topic: 'liot_esp8266_env/+/environment'
+    name: livingroom_press
+    unit_of_measurement: 'hPa'
+    value_template: '{{ value_json.pressure }}'
+  
+#  no battery at the moment
+#  - platform: mqtt
+#    state_topic: 'liot_esp8266_env/+/battery'
+#    name: bedroom_bat
+#    unit_of_measurement: '%'
+#    value_template: '{{ value_json.battery }}'
+
+media_player:
+  - platform: samsungtv
+    host: tv.local.net
+#  - platform: cast
+
+automation:
+  - alias: "Turn TV light on when sun gets dim"
+    hide_entity: True
+    trigger:
+      platform: numeric_state
+      entity_id: sun.sun
+      value_template: '{{ state.attributes.elevation }}'
+      below: '5'
+    condition:
+      condition: state
+      entity_id: media_player.samsung_tv_remote
+      state: 'on'
+    action:
+      service: homeassistant.turn_on
+      entity_id: light.livingroom_tv
+  - alias: "Turn TV light on when sun is dim"
+    hide_entity: True
+    trigger:
+      platform: state
+      entity_id: media_player.samsung_tv_remote
+      from: 'off'
+      to: 'on'
+    condition:
+      condition: numeric_state
+      entity_id: sun.sun
+      value_template: '{{ state.attributes.elevation }}'
+      below: '5'
+    action:
+      service: homeassistant.turn_on
+      entity_id: light.livingroom_tv
