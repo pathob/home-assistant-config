@@ -1,7 +1,7 @@
 homeassistant:
   customize:
     group.weather:
-      friendly_name: Wetter
+      friendly_name: Weather
     sensor.yweather_current:
       friendly_name: Wetter
     sensor.yweather_temperature:
@@ -36,6 +36,8 @@ group:
     - sensor.yweather_wind_speed
     - sensor.yweather_visibility
     - sensor.yweather_condition
+    - sensor.yweather_temperature_min
+    - sensor.yweather_temperature_max
     - sensor.yweather_temperature_min
     - sensor.yweather_temperature_max
 
